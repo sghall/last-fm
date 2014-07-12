@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-bootstrap/ui-bootstrap.js"></script>
+    <script src="lib/d3/d3.js"></script>
+    <script src="js/app.js"></script>
+  </head>
+  <body ng-app="app" ng-controller="lastfmCtrl">
+    <form name="myForm">
+      <input type="radio" ng-model="size" value="reach">  Reach
+      <input type="radio" ng-model="size" value="taggings"> Taggings
+     </form>
+    <button popover="{{dynamicPopover}}" popover-title="{{dynamicPopoverTitle}}" class="btn btn-default">Dynamic Popover</button>
+    <bubble-chart dataset="tags" view="size"></bubble-chart>
+  </body>
+</html>
