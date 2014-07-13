@@ -34,42 +34,38 @@ app.factory('lastfm', ['$http', function ($http) {
 }]);
 
 app.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
-  $scope.size = 'reach';
-  $scope.tags = [];
-  $scope.dynamicPopover = 'Hello, World!';
-  $scope.dynamicPopoverTitle = 'Title';
+  $scope.tagsize = 'reach';
+  $scope.toptags = [];
   $scope.artists = [];
 
-  lastfm.topArtists()
+  lastfm.topTags()
     .success(function (res) {
       if (res.error) {
         throw new Error(res.message);
       } else {
-        var tags = res.tags.tag.map(function (d) {
-          d.reach    = +d.reach;
-          d.taggings = +d.taggings;
-          return d;
+        $scope.toptags = res.tags.tag.map(function (t) {
+          t.reach    = +t.reach;
+          t.taggings = +t.taggings;
+          return t;
         });
-        $scope.tags = tags;
+
+        lastfm.topArtists($scope.toptags[0].name)
+          .success(function (res) {
+            if (res.error) {
+              throw new Error(res.message);
+            } else {
+              $scope.artists = res.topartists.artist.map(function (a) {
+                a.genre = $scope.toptags[0].name;
+                a.arank = +a['@attr'].rank;
+                return a;
+              });
+            }
+          });
       }
     });
-
-  // lastfm.topTags()
-  //   .success(function (res) {
-  //     if (res.error) {
-  //       throw new Error(res.message);
-  //     } else {
-  //       var tags = res.tags.tag.map(function (d) {
-  //         d.reach    = +d.reach;
-  //         d.taggings = +d.taggings;
-  //         return d;
-  //       });
-  //       $scope.tags = tags;
-  //     }
-  //   });
 }]);
 
-app.directive('bubbleChart', function(){
+app.directive('toptagChart', ['lastfm', function (lastfm) {
 
   var link = function (scope, el, attrs) {
     var diameter = 500;
@@ -87,8 +83,8 @@ app.directive('bubbleChart', function(){
         .attr("class", "bubbleChart");
 
     var update = function () {
-      var data = scope[attrs.dataset].map(function (d) {
-        d.value = d[scope[attrs.view]];
+      var data = scope.toptags.map(function (d) {
+        d.value = d[scope.tagsize];
         return d;
       });
 
@@ -106,7 +102,23 @@ app.directive('bubbleChart', function(){
 
       enter.append("circle")
         .attr("r", function (d) { return d.r; })
-        .style("fill", function (d) { return color(d.name); });
+        .style("fill", function (d) { return color(d.name); })
+        .on("click", function (d) {
+          lastfm.topArtists(d.name)
+            .success(function (res) {
+              if (res.error) {
+                throw new Error(res.message);
+              } else {
+                var artists = res.topartists.artist.map(function (a) {
+                  a.genre = d.name;
+                  a.arank = +a['@attr'].rank;
+                  return a;
+                });
+                scope.artists = artists;
+                console.log("artists", artists);
+              }
+            });
+        });
 
       enter.append("text")
         .attr("dy", ".3em")
@@ -120,14 +132,84 @@ app.directive('bubbleChart', function(){
         .attr("r", function (d) { return d.r; });
     };
 
-    scope.$watch(attrs.view, function () {
-      if (scope.tags.length > 0) {
+    scope.$watch('tagsize', function () {
+      if (scope.toptags.length > 0) {
         update();
       }
     });
 
-    scope.$watch(attrs.dataset, function () {
-      if (scope.tags.length > 0) {
+    scope.$watch('toptags', function () {
+      if (scope.toptags.length > 0) {
+        update();
+      }
+    });
+  };
+  return { link: link, restrict: 'E' };
+}]);
+
+app.directive('artistsChart', function () {
+
+  var link = function (scope, el, attrs) {
+    var msize = [400, 500], radius = 20;
+    var color = d3.scale.ordinal().range(['#58625C','#4C5355','#89817A','#36211C','#A5A9AA']);
+
+    var svg = d3.select(el[0])
+      .append("svg")
+        .attr("width", msize[0])
+        .attr("height", msize[1])
+        .attr("class", "bubbleChart");
+
+    var coords = function (position) {
+      var x, y;
+      x = ((position - 1) % 5) * 75;
+      y = (Math.ceil(position / 5)) * 45;
+      return {x: x, y: y};
+    }
+
+    var transform = function (d) {
+      var c = coords(d.arank);
+      return "translate(" + (c.x + radius + 25) + "," + c.y + ")"; 
+    };
+
+    var update = function () {
+      var data = scope.artists.map(function (d) {
+        d.value = 10;
+        return d;
+      });
+
+      var selection = svg.selectAll(".node")
+        .data(data, function (d) { return d.name; });
+
+      var enter = selection.enter()
+        .append("g")
+          .attr("class", "node")
+          .attr("transform", transform); 
+
+      enter.append("circle")
+        .attr("r", 5)
+        .style("fill", function (d) { return color(d.name); })
+
+      enter.append("text")
+        .attr("dy", ".3em")
+        .style("text-anchor", "middle")
+        .text(function (d) { return d.name.slice(0,15); });
+
+      selection.transition().duration(3000)
+        .attr("transform", transform);
+
+      selection.selectAll("circle")
+        .transition().duration(2500)
+        .attr("r", radius);
+
+      var exit = selection.exit()
+      exit.transition().duration(1000)
+      .attr("transform", function (d) {
+        return "translate(" + 1000 + "," + 1000 + ")"; 
+      }).remove();
+    };
+
+    scope.$watch('artists', function () {
+      if (scope.artists.length > 0) {
         update();
       }
     });
