@@ -8,16 +8,21 @@ html, body{
 }
 
 text {
-  font: 10px sans-serif;
+  font: 10px helvetica, sans-serif;
   pointer-events: none;
 }
 
+.number {
+  font: 32px helvetica, sans-serif;
+  fill: grey;
+}
+
 circle {
-  opacity: .8;
+  opacity: .6;
   stroke: grey;
   stroke-width: 2px;
 }
 
 circle:hover {
-  opacity: .5;
+  opacity: .3;
 }

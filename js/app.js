@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ui.bootstrap']);
+var app = angular.module('app', []);
 
 app.factory('lastfm', ['$http', function ($http) {
 
@@ -102,7 +102,7 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
 
       enter.append("circle")
         .attr("r", function (d) { return d.r; })
-        .style("fill", function (d) { return color(d.name); })
+        .style("fill", '#36211C')
         .on("click", function (d) {
           lastfm.topArtists(d.name)
             .success(function (res) {
@@ -123,7 +123,7 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
       enter.append("text")
         .attr("dy", ".3em")
         .style("text-anchor", "middle")
-        .text(function (d) { return d.name.substring(0, d.r / 3); });
+        .text(function (d) { return d.name; });
 
       selection.transition().duration(2000)
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -151,7 +151,6 @@ app.directive('artistsChart', function () {
 
   var link = function (scope, el, attrs) {
     var msize = [400, 500], radius = 20;
-    var color = d3.scale.ordinal().range(['#58625C','#4C5355','#89817A','#36211C','#A5A9AA']);
 
     var svg = d3.select(el[0])
       .append("svg")
@@ -171,6 +170,17 @@ app.directive('artistsChart', function () {
       return "translate(" + (c.x + radius + 25) + "," + c.y + ")"; 
     };
 
+    svg.selectAll(".number")
+      .data(d3.range(1,51)).enter()
+      .append("text")
+        .attr("class", "number")
+        .style("text-anchor", "middle")
+        .text(function (d) { return d; })
+        .attr("transform", function (d) {
+          var c = coords(d);
+          return "translate(" + (c.x + radius + 25) + "," + (c.y + 12) + ")";
+        }); 
+
     var update = function () {
       var data = scope.artists.map(function (d) {
         d.value = 10;
@@ -187,7 +197,7 @@ app.directive('artistsChart', function () {
 
       enter.append("circle")
         .attr("r", 5)
-        .style("fill", function (d) { return color(d.name); })
+        .style("fill", 'rgb(165, 169, 170)')
 
       enter.append("text")
         .attr("dy", ".3em")
@@ -198,7 +208,7 @@ app.directive('artistsChart', function () {
         .attr("transform", transform);
 
       selection.selectAll("circle")
-        .transition().duration(2500)
+        .transition().duration(2000)
         .attr("r", radius);
 
       var exit = selection.exit()
