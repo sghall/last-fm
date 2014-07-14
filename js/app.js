@@ -48,19 +48,6 @@ app.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
           t.taggings = +t.taggings;
           return t;
         });
-
-        // lastfm.topArtists($scope.toptags[0].name)
-        //   .success(function (res) {
-        //     if (res.error) {
-        //       throw new Error(res.message);
-        //     } else {
-        //       $scope.artists = res.topartists.artist.map(function (a) {
-        //         a.genre = $scope.toptags[0].name;
-        //         a.arank = +a['@attr'].rank;
-        //         return a;
-        //       });
-        //     }
-        //   });
       }
     });
 }]);
@@ -99,18 +86,17 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
 
       var enter = selection.enter()
         .append("g").attr("class", "node")
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-      enter.append("title")
-        .text(function (d) { return d.name; });
+        .attr("transform", function (d) { 
+          return "translate(" + d.x + "," + d.y + ")"; 
+        });
 
       enter.append("circle")
         .attr("r", function (d) { return d.r; })
         .style("fill", '#614a4a')
         .on("click", function (d) {
 
-          svg.selectAll("circle").style("fill", "#614a4a");
-          d3.select(this).style("fill", "lightgrey");
+          svg.selectAll("circle").style("fill", '#614a4a');
+          d3.select(this).style("fill", "blue");
 
           lastfm.topArtists(d.name)
             .success(function (res) {
@@ -133,7 +119,9 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
         .text(function (d) { return d.name; });
 
       selection.transition().duration(2000)
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
+        .attr("transform", function (d) { 
+          return "translate(" + d.x + "," + d.y + ")";
+        });
 
       selection.selectAll("circle").transition().duration(3000)
         .attr("r", function (d) { return d.r; });
@@ -194,6 +182,14 @@ app.directive('artistsChart', function () {
       var selection = svg.selectAll(".node")
         .data(data, function (d) { return d.name; });
 
+      selection.transition().duration(2000)
+        .attr("transform", transform);
+
+      selection.selectAll("circle")
+        .transition().duration(2000)
+        .style("fill", "blue")
+        .attr("r", radius);
+
       var enter = selection.enter()
         .append("g")
           .attr("class", "node")
@@ -201,7 +197,7 @@ app.directive('artistsChart', function () {
           .attr("transform", transform); 
 
       enter.append("circle")
-        .attr("r", 5)
+        .attr("r", radius)
         .style("fill", "#696758")
 
       enter.append("text")
@@ -209,16 +205,10 @@ app.directive('artistsChart', function () {
         .style("text-anchor", "middle")
         .text(function (d) { return d.name.slice(0,15); });
 
-      selection.transition().duration(3000)
+      enter.transition().duration(2000)
         .style("opacity", 1)
-        .attr("transform", transform);
 
-      selection.selectAll("circle")
-        .transition().duration(3000)
-        .attr("r", radius);
-
-      var exit = selection.exit()
-      exit.transition().duration(1000)
+      selection.exit().transition().duration(2000)
         .attr("transform", function (d) {
           return "translate(" + 1000 + "," + 1000 + ")"; 
         }).remove();
