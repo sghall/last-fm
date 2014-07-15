@@ -33,11 +33,17 @@ viz.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
   $scope.tagsize = 'reach';
   $scope.toptags = [];
   $scope.artists = [];
-  $scope.clWidth = window.innerWidth;
 
-   window.addEventListener('resize', function () {
-     $scope.clWidth = window.innerWidth;
-   });
+  $scope.resize = function () {
+    $(".chartSVG").each(function () {
+      var chart = $(this);
+      var psize = chart.parent().width();
+      chart.attr("width", psize);
+      chart.attr("height", psize); // They're squares :)
+    })
+  }
+
+  window.addEventListener('resize', $scope.resize);
 
   lastfm.topTags()
     .success(function (res) {
@@ -53,7 +59,7 @@ viz.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
     });
 }]);
 
-viz.directive('toptagChart', ['lastfm','$window', function (lastfm, $window) {
+viz.directive('toptagChart', ['lastfm', function (lastfm) {
 
   var link = function ($scope, $el, $attrs) {
     var diameter = 500;
@@ -127,6 +133,8 @@ viz.directive('toptagChart', ['lastfm','$window', function (lastfm, $window) {
 
       selection.selectAll("circle").transition().duration(3000)
         .attr("r", function (d) { return d.r; });
+
+      $scope.resize();
     };
 
     $scope.$watch('tagsize', update);
@@ -134,9 +142,8 @@ viz.directive('toptagChart', ['lastfm','$window', function (lastfm, $window) {
 
   };
   return {
-    template: '<div class="col-sm-6 col-md-6 col-lg-6"></div>',
+    template: '<div class="col-sm-12 col-md-6 col-lg-6"></div>',
     replace: true,
-    scope: {toptags: '=', artists: '=', tagsize: '='}, 
     link: link, 
     restrict: 'E' 
   };
@@ -214,14 +221,15 @@ viz.directive('artistsChart', function () {
         .attr("transform", function (d) {
           return "translate(" + 1000 + "," + 1000 + ")"; 
         }).remove();
+
+      $scope.resize();
     };
 
     $scope.$watch('artists', update);
   };
   return {
-    template: '<div class="col-sm-6 col-md-6 col-lg-6"></div>',
+    template: '<div class="col-sm-12 col-md-6 col-lg-6"></div>',
     replace: true,
-    scope: {artists: '='},
     link: link, 
     restrict: 'E'
   };

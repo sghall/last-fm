@@ -19,18 +19,8 @@
       </div>
     </div>
     <div class="row">
-      <toptag-chart toptags="toptags" artists="artists" tagsize="tagsize"></toptag-chart>
-      <artists-chart artists="artists"></artists-chart>
+      <toptag-chart></toptag-chart>
+      <artists-chart></artists-chart>
     </div>
-    <script>
-      window.addEventListener('resize', function () {
-        $(".chartSVG").each(function () {
-          var chart = $(this);
-          var psize = chart.parent().width();
-          chart.attr("width", psize);
-          chart.attr("height", psize); // They're squares :)
-        })
-      });
-    </script>
   </body>
 </html>
