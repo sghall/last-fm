@@ -1,42 +1,43 @@
-var app = angular.module('app', []);
+var viz = angular.module('viz', []);
 
-app.factory('lastfm', ['$http', function ($http) {
+viz.factory('lastfm', ['$http', function ($http) {
 
   var apiKey = '9e421941650f3e6d9058baf8d69d4df9';
 
-  var getTopTags = function () {
-    var url = 'http://ws.audioscrobbler.com/2.0/';
-    return $http.get(url, {
-      params: {
-        method: 'chart.gettoptags', 
-        api_key: apiKey,
-        format:'json'
-      }
-    });
-  };
-
-  var getTopArtists = function (tag) {
-    var url = 'http://ws.audioscrobbler.com/2.0/';
-    return $http.get(url, {
-      params: {
-        method: 'tag.gettopartists',
-        api_key: apiKey,
-        tag: tag,
-        format:'json'
-      }
-    });
-  };
-
   return {
-    topTags: function () { return getTopTags() },
-    topArtists: function (tag) { return getTopArtists(tag) }
+    topTags: function () {
+      var url = 'http://ws.audioscrobbler.com/2.0/';
+      return $http.get(url, {
+        params: {
+          method: 'chart.gettoptags', 
+          api_key: apiKey,
+          format:'json'
+        }
+      });
+    },
+    topArtists: function (tag) {
+      var url = 'http://ws.audioscrobbler.com/2.0/';
+      return $http.get(url, {
+        params: {
+          method: 'tag.gettopartists',
+          api_key: apiKey,
+          tag: tag,
+          format:'json'
+        }
+      });
+    }
   };
 }]);
 
-app.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
+viz.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
   $scope.tagsize = 'reach';
   $scope.toptags = [];
   $scope.artists = [];
+  $scope.clWidth = window.innerWidth;
+
+   window.addEventListener('resize', function () {
+     $scope.clWidth = window.innerWidth;
+   });
 
   lastfm.topTags()
     .success(function (res) {
@@ -52,7 +53,7 @@ app.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
     });
 }]);
 
-app.directive('toptagChart', ['lastfm', function (lastfm) {
+viz.directive('toptagChart', ['lastfm','$window', function (lastfm, $window) {
 
   var link = function ($scope, $el, $attrs) {
     var diameter = 500;
@@ -62,10 +63,11 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
       .size([diameter, diameter])
       .padding(2.5);
 
-    var svg = d3.select($el[0])
-      .append("svg")
-        .attr("width", diameter)
-        .attr("height", diameter);
+    var svg = d3.select($el[0]).append("svg")
+      .attr("class", "chartSVG")
+      .attr({width: diameter, height: diameter})
+      .attr("viewBox", "0 0 " + diameter + " " + diameter)
+      .append("g");
 
     svg.append("text").attr("id", "loading")
       .text("Loading...")
@@ -92,10 +94,10 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
 
       enter.append("circle")
         .attr("r", function (d) { return d.r; })
-        .style("fill", '#614a4a')
+        .style("fill", '#9999ff')
         .on("click", function (d) {
 
-          svg.selectAll("circle").style("fill", '#614a4a');
+          svg.selectAll("circle").style("fill", '#9999ff');
           d3.select(this).style("fill", "blue");
 
           lastfm.topArtists(d.name)
@@ -132,7 +134,7 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
 
   };
   return {
-    template: '<div class="col-sm-12 col-md-6 col-lg-6"></div>',
+    template: '<div class="col-sm-6 col-md-6 col-lg-6"></div>',
     replace: true,
     scope: {toptags: '=', artists: '=', tagsize: '='}, 
     link: link, 
@@ -141,14 +143,16 @@ app.directive('toptagChart', ['lastfm', function (lastfm) {
 
 }]);
 
-app.directive('artistsChart', function () {
+viz.directive('artistsChart', function () {
 
   var link = function ($scope, $el, $attrs) {
-    var msize = [500, 500], radius = 22;
+    var csize = [500, 500], radius = 22;
 
-    var svg = d3.select($el[0])
-      .append("svg")
-      .attr({width: msize[0], height: msize[1]});
+    var svg = d3.select($el[0]).append("svg")
+      .attr("class", "chartSVG")
+      .attr({width: csize[0], height: csize[1]})
+      .attr("viewBox", "0 0 " + csize[0] + " " + csize[1])
+      .append("g");
 
     var coords = function (position) {
       var x, y;
@@ -182,13 +186,11 @@ app.directive('artistsChart', function () {
       var selection = svg.selectAll(".node")
         .data(data, function (d) { return d.name; });
 
+      selection.selectAll("circle")
+        .style("fill", "blue")
+
       selection.transition().duration(2000)
         .attr("transform", transform);
-
-      selection.selectAll("circle")
-        .transition().duration(2000)
-        .style("fill", "blue")
-        .attr("r", radius);
 
       var enter = selection.enter()
         .append("g")
@@ -198,7 +200,7 @@ app.directive('artistsChart', function () {
 
       enter.append("circle")
         .attr("r", radius)
-        .style("fill", "#696758")
+        .style("fill", "#696758");
 
       enter.append("text")
         .attr("dy", ".3em")
@@ -208,7 +210,7 @@ app.directive('artistsChart', function () {
       enter.transition().duration(2000)
         .style("opacity", 1)
 
-      selection.exit().transition().duration(2000)
+      selection.exit().transition().duration(1000)
         .attr("transform", function (d) {
           return "translate(" + 1000 + "," + 1000 + ")"; 
         }).remove();
@@ -217,7 +219,7 @@ app.directive('artistsChart', function () {
     $scope.$watch('artists', update);
   };
   return {
-    template: '<div class="col-sm-12 col-md-6 col-lg-6"></div>',
+    template: '<div class="col-sm-6 col-md-6 col-lg-6"></div>',
     replace: true,
     scope: {artists: '='},
     link: link, 
