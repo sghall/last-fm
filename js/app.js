@@ -29,35 +29,30 @@ viz.factory('lastfm', ['$http', function ($http) {
   };
 }]);
 
-viz.controller('lastfmCtrl', ['$scope','lastfm', function ($scope, lastfm) {
-  $scope.tagsize = 'reach';
-  $scope.toptags = [];
-  $scope.artists = [];
+viz.controller('lastfmCtrl', ['$scope','lastfm', 
+  function ($scope, lastfm) {
+    $scope.tagsize = 'reach';
+    $scope.toptags = [];
+    $scope.artists = [];
 
-  $scope.resize = function () {
-    $(".chartSVG").each(function () {
-      var chart = $(this);
-      var psize = chart.parent().width();
-      chart.attr("width", psize);
-      chart.attr("height", psize); // They're squares :)
-    })
-  }
-
-  window.addEventListener('resize', $scope.resize);
-
-  lastfm.topTags()
-    .success(function (res) {
-      if (res.error) {
-        throw new Error(res.message);
-      } else {
-        $scope.toptags = res.tags.tag.map(function (t) {
-          t.reach    = +t.reach;
-          t.taggings = +t.taggings;
-          return t;
-        });
-      }
+    window.addEventListener('resize', function () {
+      $scope.$broadcast('windowResize');
     });
-}]);
+
+    lastfm.topTags()
+      .success(function (res) {
+        if (res.error) {
+          throw new Error(res.message);
+        } else {
+          $scope.toptags = res.tags.tag.map(function (t) {
+            t.reach    = +t.reach;
+            t.taggings = +t.taggings;
+            return t;
+          });
+        }
+      });
+  }
+]);
 
 viz.directive('toptagChart', ['lastfm', function (lastfm) {
 
@@ -70,12 +65,12 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
       .padding(2.5);
 
     var svg = d3.select($el[0]).append("svg")
-      .attr("class", "chartSVG")
       .attr({width: diameter, height: diameter})
-      .attr("viewBox", "0 0 " + diameter + " " + diameter)
-      .append("g");
+      .attr("viewBox", "0 0 " + diameter + " " + diameter);
 
-    svg.append("text").attr("id", "loading")
+    var chart = svg.append("g");
+
+    chart.append("text").attr("id", "loading")
       .text("Loading...")
       .attr("transform", "translate(200,250)");
 
@@ -87,9 +82,9 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
 
       bubble.nodes({children: data});
 
-      if (data.length) svg.select("#loading").remove();
+      if (data.length) chart.select("#loading").remove();
 
-      var selection = svg.selectAll(".node")
+      var selection = chart.selectAll(".node")
         .data(data);
 
       var enter = selection.enter()
@@ -134,15 +129,21 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
       selection.selectAll("circle").transition().duration(3000)
         .attr("r", function (d) { return d.r; });
 
-      $scope.resize();
+      resize();
     };
 
+    function resize() {
+      svg.attr("width",  $el[0].clientWidth);
+      svg.attr("height",  $el[0].clientWidth);
+    }
+
+    $scope.$on('windowResize',resize);
     $scope.$watch('tagsize', update);
     $scope.$watch('toptags', update);
 
   };
   return {
-    template: '<div class="col-sm-12 col-md-6 col-lg-6"></div>',
+    template: '<div class="chart col-xs-12 col-sm-6 col-md-6 col-lg-5"></div>',
     replace: true,
     link: link, 
     restrict: 'E' 
@@ -156,10 +157,10 @@ viz.directive('artistsChart', function () {
     var csize = [500, 500], radius = 22;
 
     var svg = d3.select($el[0]).append("svg")
-      .attr("class", "chartSVG")
       .attr({width: csize[0], height: csize[1]})
-      .attr("viewBox", "0 0 " + csize[0] + " " + csize[1])
-      .append("g");
+      .attr("viewBox", "0 0 " + csize[0] + " " + csize[1]);
+
+    var chart = svg.append("g");
 
     var coords = function (position) {
       var x, y;
@@ -173,7 +174,7 @@ viz.directive('artistsChart', function () {
       return "translate(" + (c.x + radius + 30) + "," + c.y + ")"; 
     };
 
-    svg.selectAll(".number")
+    chart.selectAll(".number")
       .data(d3.range(1,51)).enter()
       .append("text")
         .attr("class", "number")
@@ -190,14 +191,16 @@ viz.directive('artistsChart', function () {
         return d;
       });
 
-      var selection = svg.selectAll(".node")
+      var selection = chart.selectAll(".node")
         .data(data, function (d) { return d.name; });
 
-      selection.selectAll("circle")
-        .style("fill", "blue")
+      selection.style("opacity", 1)
 
       selection.transition().duration(2000)
         .attr("transform", transform);
+
+      selection.selectAll("circle")
+        .style("fill", "blue")
 
       var enter = selection.enter()
         .append("g")
@@ -222,14 +225,21 @@ viz.directive('artistsChart', function () {
           return "translate(" + 1000 + "," + 1000 + ")"; 
         }).remove();
 
-      $scope.resize();
+      resize();
     };
 
+    function resize() {
+      svg.attr("width",  $el[0].clientWidth);
+      svg.attr("height",  $el[0].clientWidth);
+    }
+
+    $scope.$on('windowResize',resize);
     $scope.$watch('artists', update);
   };
   return {
-    template: '<div class="col-sm-12 col-md-6 col-lg-6"></div>',
+    template: '<div class="chart col-xs-12 col-sm-6 col-md-6 col-lg-5 col-lg-offset-1"></div>',
     replace: true,
+    scope: {artists: '='},
     link: link, 
     restrict: 'E'
   };

@@ -1,15 +1,24 @@
-html, body{
-  margin: 10px 30px 5px 30px;
+html, body {
+  margin-right: 10px;
   color: white;
   background-color: #333;
   font-size: 1em;
   font-family: helvetica;
 }
 
+@media (max-width: 768px) {
+  html, body {
+    margin-right: 30px;
+  }
+}
+
 svg {
-  margin-top: 5px;
   border: 1px solid grey;
   border-radius: 6px;
+}
+
+.chart {
+  padding: 15px;
 }
 
 text {
