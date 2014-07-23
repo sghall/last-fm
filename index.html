@@ -16,16 +16,27 @@
         <p class="lead">Click on a tag to view the top 50 artists. Click on another tag to see how the list of artists for the two tags differ. Overlapping artists will appear in blue. Continue clicking to make more comparisons.</p>
       </div>
       <div class="row">
-        <div class="col-sm-12 col-md-12 col-lg-12">
-          <form name="myForm">
-            <input type="radio" ng-model="tagsize" value="reach"> Reach
-            <input type="radio" ng-model="tagsize" value="taggings"> Taggings
-          </form>
-        </div>
       </div>
       <div class="row">
-        <toptag-chart></toptag-chart>
-        <artists-chart artists="artists"></artists-chart>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-5">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <form name="myForm">
+                <input type="radio" ng-model="tagsize" value="reach"> Reach
+                <input type="radio" ng-model="tagsize" value="taggings"> Taggings
+              </form>
+            </div>
+            <toptag-chart></toptag-chart>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-5 col-lg-offset-1">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <p>Active Tag: {{ currtag }}</p>
+            </div>
+            <artists-chart artists="artists"></artists-chart>
+          </div>
+        </div>
       </div>
     </div>
   </body>
