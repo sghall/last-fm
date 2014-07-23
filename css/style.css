@@ -8,8 +8,12 @@ html, body {
 
 @media (max-width: 768px) {
   html, body {
-    margin-right: 30px;
+    margin-right: 20px;
   }
+}
+
+p {
+  margin: 0px;
 }
 
 svg {
