@@ -33,6 +33,7 @@ viz.controller('lastfmCtrl', ['$scope','lastfm',
   function ($scope, lastfm) {
     $scope.tagsize = 'reach';
     $scope.toptags = [];
+    $scope.currtag = '';
     $scope.artists = [];
 
     window.addEventListener('resize', function () {
@@ -97,7 +98,6 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
         .attr("r", function (d) { return d.r; })
         .style("fill", '#9999ff')
         .on("click", function (d) {
-
           svg.selectAll("circle").style("fill", '#9999ff');
           d3.select(this).style("fill", "blue");
 
@@ -106,6 +106,7 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
               if (res.error) {
                 throw new Error(res.message);
               } else {
+               $scope.currtag = d.name;
                 var artists = res.topartists.artist.map(function (a) {
                   a.genre = d.name;
                   a.arank = +a['@attr'].rank;
@@ -143,7 +144,7 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
 
   };
   return {
-    template: '<div class="chart col-xs-12 col-sm-6 col-md-6 col-lg-5"></div>',
+    template: '<div class="chart col-sm-12 col-md-12 col-lg-12"></div>',
     replace: true,
     link: link, 
     restrict: 'E' 
@@ -237,7 +238,7 @@ viz.directive('artistsChart', function () {
     $scope.$watch('artists', update);
   };
   return {
-    template: '<div class="chart col-xs-12 col-sm-6 col-md-6 col-lg-5 col-lg-offset-1"></div>',
+    template: '<div class="chart col-sm-12 col-md-12 col-lg-12"></div>',
     replace: true,
     scope: {artists: '='},
     link: link, 
