@@ -1,7 +1,7 @@
 html, body {
   margin-right: 10px;
   color: white;
-  background-color: #626369;
+  background: url('img/congruent_outline.png');
   font-size: 1em;
   font-family: helvetica;
 }
@@ -43,11 +43,11 @@ text {
 }
 
 circle {
-  opacity: .5;
-  stroke: #fff;
+  opacity: .6;
+  stroke: #D9D9D9;
   stroke-width: 2px;
 }
 
 circle:hover {
-  opacity: .3;
+  opacity: .4;
 }
