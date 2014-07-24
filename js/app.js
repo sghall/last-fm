@@ -96,9 +96,9 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
 
       enter.append("circle")
         .attr("r", function (d) { return d.r; })
-        .style("fill", '#9999ff')
+        .style("fill", '#61515d')
         .on("click", function (d) {
-          svg.selectAll("circle").style("fill", '#9999ff');
+          svg.selectAll("circle").style("fill", '#61515d');
           d3.select(this).style("fill", "blue");
 
           lastfm.topArtists(d.name)
@@ -211,7 +211,7 @@ viz.directive('artistsChart', function () {
 
       enter.append("circle")
         .attr("r", radius)
-        .style("fill", "#696758");
+        .style("fill", "#635F5D");
 
       enter.append("text")
         .attr("dy", ".3em")
