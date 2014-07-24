@@ -1,7 +1,7 @@
 html, body {
   margin-right: 10px;
   color: white;
-  background-color: #333;
+  background-color: #626369;
   font-size: 1em;
   font-family: helvetica;
 }
@@ -17,7 +17,7 @@ p {
 }
 
 svg {
-  border: 1px solid grey;
+  border: 1px solid white;
   border-radius: 6px;
 }
 
@@ -43,7 +43,7 @@ text {
 }
 
 circle {
-  opacity: .4;
+  opacity: .5;
   stroke: #fff;
   stroke-width: 2px;
 }
