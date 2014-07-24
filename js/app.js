@@ -96,10 +96,10 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
 
       enter.append("circle")
         .attr("r", function (d) { return d.r; })
-        .style("fill", '#61515d')
+        .style("fill", '#FFCB72')
         .on("click", function (d) {
-          svg.selectAll("circle").style("fill", '#61515d');
-          d3.select(this).style("fill", "blue");
+          svg.selectAll("circle").style("fill", '#FFCB72');
+          d3.select(this).style("fill", "#19314A");
 
           lastfm.topArtists(d.name)
             .success(function (res) {
@@ -201,7 +201,7 @@ viz.directive('artistsChart', function () {
         .attr("transform", transform);
 
       selection.selectAll("circle")
-        .style("fill", "blue")
+        .style("fill", "#19314A")
 
       var enter = selection.enter()
         .append("g")
@@ -211,7 +211,7 @@ viz.directive('artistsChart', function () {
 
       enter.append("circle")
         .attr("r", radius)
-        .style("fill", "#635F5D");
+        .style("fill", "#8FC6FF");
 
       enter.append("text")
         .attr("dy", ".3em")
