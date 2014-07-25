@@ -2,7 +2,8 @@ angular.module('viz', []);
 
 angular.module('viz').factory('lastfm', ['$http', function ($http) {
 
-  var apiKey = '9e421941650f3e6d9058baf8d69d4df9';
+  // Get an API key.  It's free. http://www.last.fm/api
+  var apiKey = 'put_your_api_key_here';
 
   return {
     topTags: function () {
@@ -134,8 +135,8 @@ angular.module('viz').directive('toptagChart', ['lastfm', function (lastfm) {
     };
 
     function resize() {
-      svg.attr("width",  $el[0].clientWidth);
-      svg.attr("height",  $el[0].clientWidth);
+      svg.attr("width", $el[0].clientWidth);
+      svg.attr("height", $el[0].clientWidth); //It's a square
     }
 
     $scope.$on('windowResize',resize);
@@ -230,8 +231,8 @@ angular.module('viz').directive('artistsChart', function () {
     };
 
     function resize() {
-      svg.attr("width",  $el[0].clientWidth);
-      svg.attr("height",  $el[0].clientWidth);
+      svg.attr("width", $el[0].clientWidth);
+      svg.attr("height", $el[0].clientWidth); //It's a square
     }
 
     $scope.$on('windowResize',resize);
