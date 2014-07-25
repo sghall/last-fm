@@ -216,7 +216,7 @@ angular.module('viz').directive('artistsChart', function () {
       enter.append("text")
         .attr("dy", ".3em")
         .style("text-anchor", "middle")
-        .text(function (d) { return d.name.slice(0,15); });
+        .text(function (d) { return d.name.slice(0,21); });
 
       enter.transition().duration(2000)
         .style("opacity", 1)
