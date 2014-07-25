@@ -46,7 +46,7 @@ text {
 circle {
   opacity: .6;
   stroke: #D9D9D9;
-  stroke-width: 3px;
+  stroke-width: 2px;
 }
 
 circle:hover {
