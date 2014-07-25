@@ -1,6 +1,6 @@
-var viz = angular.module('viz', []);
+angular.module('viz', []);
 
-viz.factory('lastfm', ['$http', function ($http) {
+angular.module('viz').factory('lastfm', ['$http', function ($http) {
 
   var apiKey = '9e421941650f3e6d9058baf8d69d4df9';
 
@@ -29,7 +29,7 @@ viz.factory('lastfm', ['$http', function ($http) {
   };
 }]);
 
-viz.controller('lastfmCtrl', ['$scope','$window','lastfm', 
+angular.module('viz').controller('lastfmCtrl', ['$scope','$window','lastfm', 
   function ($scope, $window, lastfm) {
     $scope.tagsize = 'reach';
     $scope.toptags = [];
@@ -55,7 +55,7 @@ viz.controller('lastfmCtrl', ['$scope','$window','lastfm',
   }
 ]);
 
-viz.directive('toptagChart', ['lastfm', function (lastfm) {
+angular.module('viz').directive('toptagChart', ['lastfm', function (lastfm) {
 
   var link = function ($scope, $el, $attrs) {
     var diameter = 500;
@@ -152,7 +152,7 @@ viz.directive('toptagChart', ['lastfm', function (lastfm) {
 
 }]);
 
-viz.directive('artistsChart', function () {
+angular.module('viz').directive('artistsChart', function () {
 
   var link = function ($scope, $el, $attrs) {
     var csize = [500, 500], radius = 22;
