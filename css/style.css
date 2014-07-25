@@ -3,7 +3,7 @@ html, body {
   color: white;
   background: url('img/congruent_outline.png');
   font-size: 1em;
-  font-family: helvetica;
+  font-family: Voltaire, helvetica, sans-serif;
 }
 
 @media (max-width: 768px) {
@@ -17,8 +17,9 @@ p {
 }
 
 svg {
-  border: 1px solid white;
-  border-radius: 6px;
+  border: 2px solid rgba(100, 100, 100, 0.5);
+  border-radius: 10px;
+  background-color: rgba(45, 45, 45, 0.5);
 }
 
 .chart {
@@ -26,18 +27,18 @@ svg {
 }
 
 text {
-  font: 10px helvetica, sans-serif;
+  font-size: 10px;
   pointer-events: none;
   fill: #fff;
 }
 
 #loading {
-  font: 22px helvetica, sans-serif;
+  font-size: 22px;
   fill: grey;
 }
 
 .number {
-  font: 32px helvetica, sans-serif;
+  font-size: 32px;
   fill: #fff;
   opacity: .8;
 }
@@ -45,7 +46,7 @@ text {
 circle {
   opacity: .6;
   stroke: #D9D9D9;
-  stroke-width: 2px;
+  stroke-width: 3px;
 }
 
 circle:hover {
