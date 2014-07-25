@@ -29,14 +29,14 @@ viz.factory('lastfm', ['$http', function ($http) {
   };
 }]);
 
-viz.controller('lastfmCtrl', ['$scope','lastfm', 
-  function ($scope, lastfm) {
+viz.controller('lastfmCtrl', ['$scope','$window','lastfm', 
+  function ($scope, $window, lastfm) {
     $scope.tagsize = 'reach';
     $scope.toptags = [];
     $scope.currtag = '';
     $scope.artists = [];
 
-    window.addEventListener('resize', function () {
+    $window.addEventListener('resize', function () {
       $scope.$broadcast('windowResize');
     });
 
@@ -211,7 +211,7 @@ viz.directive('artistsChart', function () {
 
       enter.append("circle")
         .attr("r", radius)
-        .style("fill", "#8FC6FF");
+        .style("fill", "#6B95BF");
 
       enter.append("text")
         .attr("dy", ".3em")
