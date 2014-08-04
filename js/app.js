@@ -4,7 +4,7 @@ angular.module('viz').factory('lastfm', ['$http', function ($http) {
 
   // GET YOUR API KEY. IT'S FREE AT http://www.last.fm/api
   var apiKey = 'put_your_api_key_here';
-
+  
   return {
     topTags: function () {
       var url = 'http://ws.audioscrobbler.com/2.0/';
@@ -148,7 +148,7 @@ angular.module('viz').directive('toptagChart', ['lastfm',
 
     };
     return {
-      template: '<div class="chart col-sm-12 col-md-12 col-lg-12"></div>',
+      template: '<div class="chart col-sm-12 col-md-12 col-lg-12 col-xl-12"></div>',
       replace: true,
       link: link, 
       restrict: 'E' 
@@ -246,7 +246,7 @@ angular.module('viz').directive('artistsChart', ['$window',
       $scope.$watch('artists', update);
     };
     return {
-      template: '<div class="chart col-sm-12 col-md-12 col-lg-12"></div>',
+      template: '<div class="chart col-sm-12 col-md-12 col-lg-12 col-xl-12"></div>',
       replace: true,
       scope: {artists: '='},
       link: link, 

@@ -6,6 +6,10 @@ html, body {
   font-family: Voltaire, helvetica, sans-serif;
 }
 
+.container {
+  width: 80%;
+}
+
 @media (max-width: 768px) {
   html, body {
     margin-right: 20px;
