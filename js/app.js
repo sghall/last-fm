@@ -4,7 +4,7 @@ angular.module('viz').factory('lastfm', ['$http', function ($http) {
 
   // GET YOUR API KEY. IT'S FREE AT http://www.last.fm/api
   var apiKey = 'put_your_api_key_here';
-  
+
   return {
     topTags: function () {
       var url = 'http://ws.audioscrobbler.com/2.0/';

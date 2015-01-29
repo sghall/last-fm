@@ -1,7 +1,7 @@
 html, body {
   margin-right: 10px;
   color: white;
-  background: url('img/congruent_outline.png');
+  background-color: rgba(0, 0, 0, 0.8);
   font-size: 1em;
   font-family: Voltaire, helvetica, sans-serif;
 }
