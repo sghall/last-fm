@@ -1,7 +1,7 @@
 html, body {
   margin-right: 10px;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.8);
+  color: #333;
+  background-color: #EAEAEA;
   font-size: 1em;
   font-family: Voltaire, helvetica, sans-serif;
 }
@@ -38,7 +38,7 @@ text {
 
 #loading {
   font-size: 22px;
-  fill: grey;
+  fill: #333;
 }
 
 .number {
@@ -49,8 +49,8 @@ text {
 
 circle {
   opacity: .6;
-  stroke: #D9D9D9;
-  stroke-width: 2px;
+  stroke: white;
+  stroke-width: 1px;
 }
 
 circle:hover {
